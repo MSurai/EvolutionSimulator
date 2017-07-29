@@ -6,74 +6,125 @@ import random
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
+SEED = 11
+
 MIN_NODE_COUNT = 3
 MAX_NODE_COUNT = 5
 
 
 class Node:
     """
-    Nodes are part of a creature, in which they are connected by muscles.
-    They collide with the floor, but not with other nodes.
+    **Description:**
+        Nodes are part of a creature, in which they are connected by muscles.
+        They collide with the floor, but not with other nodes.
 
-    =================== ===================
-    property            description
-    =================== ===================
-    x                   position on x-axis
-    y                   position on y-axis
-    friction            determines the friction with the ground
-    =================== ===================
+    _____
+
+    **Properties:**
+        x
+            position on x-axis
+        y
+            position on y-axis
+        friction
+            determines the friction with the ground
     """
     def __init__(self, x, y, friction):
-        pass
+        self.x = x
+        self.y = y
+        self.friction = friction
+
+    @classmethod
+    def random_init(cls):
+        # TODO: actually set random values
+        x = None
+        y = None
+        friction = None
+
+        return cls(x, y, friction)
 
 
 class Muscle:
     """
-    Muscles are part of a creature, in which they connect nodes.
-    They don't collide with anything.
+    **Description:**
+        Muscles are part of a creature, in which they connect nodes.
+        If the internal_clock of the creature reaches the contracted_time
+        of the muscle, the muscle contracts/pulls to contracted_length.
+        If the internal_clock of the creature reaches the extended_time
+        of the muscle, the muscle extends/pushes to extended_length.
+        The muscle pushes/pulls with his strength.
+        They don't collide with anything.
 
-    =================== ===================
-    property            description
-    =================== ===================
-    extended_time       between 0 and 2*pi (when internal_clock of creature reaches extended_time, muscle extends)
-    contracted_time     between 0 and 2*pi (when internal_clock of creature reaches contracted_time, muscle contracts)
-    extended_length
-    contracted_length
-    strength            determines how strong (fast) the two connected nodes are pulled towards each other
-    =================== ===================
+    _____
+
+    **Properties:**
+        extended_time
+            between 0 and 2*pi (when internal_clock of creature reaches extended_time, muscle extends)
+        contracted_time
+            between 0 and 2*pi (when internal_clock of creature reaches contracted_time, muscle contracts)
+        extended_length
+            .
+        contracted_length
+            .
+        strength
+            determines how strong (fast?) the two connected nodes are pulled towards each other
     """
     def __init__(self, extended_time, contracted_time, extended_length, contracted_length, strength):
-        pass
+        self.extended_time = extended_time
+        self.contracted_time = contracted_time
+        self.extended_length = extended_length
+        self.contracted_length = contracted_length
+        self.strength = strength
+
+    @classmethod
+    def random_init(cls):
+        # TODO: actually set random values
+        extended_time = None
+        contracted_time = None
+        extended_length = None
+        contracted_length = None
+        strength = None
+
+        return cls(extended_time, contracted_time, extended_length, contracted_length, strength)
 
 
 class Creature:
     """
-    A creature consists of:
+    **Description:**
+        A creature ...
 
-    - internal clock (loops from 0 to some 2*pi)
-    - nodes (see class: :class:`Node`)
-    - muscles (see class: :class:`Muscle`)
+    _____
+
+    **Properties:**
+        nodes
+            see class: :class:`Node`
+        muscles
+            see class: :class:`Muscle`
+        internal clock
+            loops from 0 to some 2*pi
     """
-    def __init__(self):
-        """Create all parts (and properties?) of creature."""
-        self.nodes = []
-        self.muscles = []
+    def __init__(self, nodes, muscles):
+        self.nodes = nodes
+        self.muscles = muscles
         self.internal_clock = 0
 
-    def create_random(self):
-        # node_count between min and max
+    @classmethod
+    def random_init(cls):
+        """Acts as an overloaded constructor for random initialization of all properties."""
+        nodes = []
+        muscles = []
+
         node_count = random.randint(MIN_NODE_COUNT, MAX_NODE_COUNT)
-        # every node must be connected with at least on other node
         muscle_count = random.randint(node_count, nCr(node_count, 2))
 
-        # TODO: actually create random nodes and muscles
         for i in range(node_count):
-            node = Node()
-            self.nodes.append(node)
+            node = Node.random_init()
+            nodes.append(node)
 
         for i in range(muscle_count):
-            muscle = Muscle()
-            self.muscles.append(muscle)
+            muscle = Muscle.random_init()
+            muscles.append(muscle)
+
+        return cls(nodes, muscles)
 
 
 def nCr(n, r):
@@ -86,7 +137,11 @@ def nCr(n, r):
 
 
 def main():
-    pass
+    random.seed(SEED)
+
+    creature = Creature.random_init()
+    print(creature.nodes)
+    print(creature.nodes[0].x)
 
 
 if __name__ == '__main__':
