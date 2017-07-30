@@ -136,20 +136,6 @@ def nCr(n, r):
     return f(n) // f(r) // f(n-r)
 
 
-def float_range(start=0.0, stop=1.0, step=1.0):
-    """
-    Implementation of range(start, stop, step) as a generator that accepts floats as parameters.
-
-    **Disclaimer: comes with float rounding errors!**
-    """
-    i = 0
-    current_val = start
-    while current_val < stop:
-        yield current_val
-        i += 1
-        current_val = start + i * step
-
-
 def main():
     random.seed(SEED)
 
