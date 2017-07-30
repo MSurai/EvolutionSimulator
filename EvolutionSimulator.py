@@ -10,7 +10,8 @@ SEED = 11
 
 MIN_NODE_COUNT = 3
 MAX_NODE_COUNT = 5
-
+MIN_MUSCLE_LENGTH = 5
+MAX_MUSCLE_LENGTH = 10
 
 class Node:
     """
@@ -47,20 +48,22 @@ class Muscle:
     """
     **Description:**
         Muscles are part of a creature, in which they connect nodes.
-        If the internal_clock of the creature reaches the contracted_time
-        of the muscle, the muscle contracts/pulls to contracted_length.
-        If the internal_clock of the creature reaches the extended_time
-        of the muscle, the muscle extends/pushes to extended_length.
+        If the internal_clock of the creature the muscle belongs to
+        reaches the contracted_time of the muscle, the muscle
+        contracts/pulls to contracted_length. Same goes for
+        extended_time and extended_length.
         The muscle pushes/pulls with his strength.
-        They don't collide with anything.
+        Muscles don't collide with anything.
 
     _____
 
     **Properties:**
         extended_time
-            between 0 and 2*pi (when internal_clock of creature reaches extended_time, muscle extends)
+            angle between 0 and 2*pi (when internal_clock of creature
+            reaches extended_time, muscle extends)
         contracted_time
-            between 0 and 2*pi (when internal_clock of creature reaches contracted_time, muscle contracts)
+            angle between 0 and 2*pi (when internal_clock of creature
+            reaches contracted_time, muscle contracts)
         extended_length
             .
         contracted_length
@@ -78,11 +81,14 @@ class Muscle:
     @classmethod
     def random_init(cls):
         # TODO: actually set random values
-        extended_time = None
-        contracted_time = None
-        extended_length = None
-        contracted_length = None
-        strength = None
+        times = random.sample(range(0, 360), 2)
+        times = [math.sin(x) for x in times]
+        extended_time, contracted_time = min(times), max(times)
+
+        lengths = random.sample(range(MAX_MUSCLE_LENGTH, MAX_MUSCLE_LENGTH+1), 2)
+        contracted_length, extended_length = min(lengths), max(lengths)
+
+        strength = random.random()
 
         return cls(extended_time, contracted_time, extended_length, contracted_length, strength)
 
@@ -99,8 +105,8 @@ class Creature:
             see class: :class:`Node`
         muscles
             see class: :class:`Muscle`
-        internal clock
-            loops from 0 to some 2*pi
+        internal_clock
+            (angle) loops from 0 to some 2*pi
     """
     def __init__(self, nodes, muscles):
         self.nodes = nodes
