@@ -6,12 +6,23 @@ import random
 SCREEN_WIDTH = 800
 SCREEN_HEIGHT = 600
 
+
 SEED = 11
+
+GRAVITY = 0.9
+AIR_FRICTION = 0.1
 
 MIN_NODE_COUNT = 3
 MAX_NODE_COUNT = 5
+
+NODE_RADIUS = 5
+
+MIN_NODE_FRICTION = 0
+MAX_NODE_FRICTION = 1
+
 MIN_MUSCLE_LENGTH = 5
 MAX_MUSCLE_LENGTH = 10
+
 
 class Node:
     """
@@ -45,6 +56,7 @@ class Node:
 
 
 class Muscle:
+    # TODO: rework values (extended and contracted time could 0 - 360° or 0 - 100%) in docstring and random_init
     """
     **Description:**
         Muscles are part of a creature, in which they connect nodes.
@@ -80,7 +92,6 @@ class Muscle:
 
     @classmethod
     def random_init(cls):
-        # TODO: actually set random values
         times = random.sample(range(0, 360), 2)
         times = [math.sin(x) for x in times]
         extended_time, contracted_time = min(times), max(times)
@@ -94,6 +105,7 @@ class Muscle:
 
 
 class Creature:
+    # TODO: add description
     """
     **Description:**
         A creature ...
