@@ -96,7 +96,7 @@ class Muscle:
         times = [math.sin(x) for x in times]
         extended_time, contracted_time = min(times), max(times)
 
-        lengths = random.sample(range(MAX_MUSCLE_LENGTH, MAX_MUSCLE_LENGTH+1), 2)
+        lengths = random.sample(range(MIN_MUSCLE_LENGTH, MAX_MUSCLE_LENGTH+1), 2)
         contracted_length, extended_length = min(lengths), max(lengths)
 
         strength = random.random()
@@ -143,6 +143,23 @@ class Creature:
             muscles.append(muscle)
 
         return cls(nodes, muscles)
+
+    def add_random_node(self):
+        # TODO: what if no node exists yet? -> no parent available
+        # choose some preexisting node, the new nodes position will be generated from the parent nodes'
+        parent_node = random.choice(self.nodes)
+        angle = random.uniform(0, 2*math.pi)
+
+        distance_to_parent = random.uniform(MIN_MUSCLE_LENGTH, MAX_MUSCLE_LENGTH)  # placeholders
+        x = parent_node.x  # placeholders
+        y = parent_node.y  # placeholders
+
+        new_x = x + math.cos(angle) * distance_to_parent
+        new_y = y + math.sin(angle) * distance_to_parent
+        new_friction = random.uniform(MIN_NODE_FRICTION, MAX_NODE_FRICTION)
+
+        new_node = Node(new_x, new_y, new_friction)
+        self.nodes.append(new_node)
 
 
 def nCr(n, r):
