@@ -1,5 +1,6 @@
 import math
 import random
+import sqlite3
 
 
 # CONSTANTS
@@ -22,7 +23,7 @@ class Node:
 
     @classmethod
     def from_random(cls):
-        # TODO: update generation of random x and y position
+        # TODO: update generation of random x and y position (?)
         x_pos = random.randint(-1 * NODE_POS_OFFSET_AT_CREATION, NODE_POS_OFFSET_AT_CREATION)
         y_pos = random.randint(-1 * NODE_POS_OFFSET_AT_CREATION, NODE_POS_OFFSET_AT_CREATION)
         friction = random.uniform(MIN_NODE_FRICTION, MAX_NODE_FRICTION)
@@ -44,11 +45,59 @@ class Muscle:
 
 class Creature:
     def __init__(self):
-        pass
+        self.nodes = []
+        self.muscles = []
+        self.alive = True
 
     @classmethod
     def random_init(cls):
         pass
+
+    def insert_into_db(self, db_name):
+        conn = sqlite3.connect(db_name)
+        cur = conn.cursor()
+
+        insert_creature = """
+            INSERT INTO creatures
+                (alive)
+            VALUES
+                (1);
+        """
+
+        get_creature_id = """
+            SELECT creature_id FROM creatures
+            ORDER BY creature_id DESC
+            LIMIT 1;
+        """
+
+        insert_nodes = """
+            INSERT INTO nodes
+                (x_position, y_position, friction, creature_id)
+            VALUES
+                (?, ?, ?, ?);
+        """
+
+        insert_muscles = """
+            INSERT INTO nodes
+                (extended_length, contracted_length, extended_time, contracted_time, strength,
+                node_1_id, node_2_id, creature_id)
+            VALUES
+                (?, ?, ?, ?, ?,
+                ?, ?, ?);
+        """
+
+        cur.execute(insert_creature)
+        creature_id = cur.execute(get_creature_id)
+        for node in self.nodes:
+            cur.execute(insert_nodes, node.x_pos, node.y_pos, node.friction, creature_id)
+        # TODO: find better way?
+        for muscle in self.muscles:
+            cur.execute(insert_muscles, muscle.extended_length, muscle.contracted_length, \
+                muscle.extended_time, muscle.contracted_time, muscle.strength, \
+                node_1_id, node_2_id, creature_id)
+
+        cur.close()
+        conn.close()
 
 
 def nCr(n, r):
