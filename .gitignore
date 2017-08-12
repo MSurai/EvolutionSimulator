@@ -1,4 +1,9 @@
+# standard ignores
 __pycache__/
 
+# folders
 .idea/
 testing_stuff/
+
+# files
+*.db
