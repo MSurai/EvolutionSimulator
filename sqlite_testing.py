@@ -11,15 +11,19 @@ def main():
     for command in commands:
         cur.execute(command)
 
-    commands = read_sql_commands('insert_into_nodes.sql')
-    for command in commands:
-        # TODO: remove this later
-        # generate a few random nodes (testing only)
+
+    # TODO: remove this later
+    # generate a few random nodes (testing only)
+    nodes = []
+    for _ in range(5):
         x_start_pos = random.randint(-5, 5)
         y_start_pos = random.randint(-5, 5)
         friction = random.random()
-        cur.execute(command, [x_start_pos, y_start_pos, friction])
-        conn.commit()
+        nodes.append((x_start_pos, y_start_pos, friction))
+    
+    command = read_sql_commands('insert_into_nodes.sql')
+    cur.executemany(command[0], nodes)
+    conn.commit()
 
     cur.close()
     conn.close()
