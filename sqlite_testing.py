@@ -1,16 +1,25 @@
 import sqlite3
-
+import random
 
 def main():
     db_name = 'database.db'
-    sql_commands_file = 'create_tables.sql'
 
     conn = sqlite3.connect(db_name)
     cur = conn.cursor()
 
-    commands = read_sql_commands(sql_commands_file)
+    commands = read_sql_commands('create_tables.sql')
     for command in commands:
         cur.execute(command)
+
+    commands = read_sql_commands('insert_into_nodes.sql')
+    for command in commands:
+        # TODO: remove this later
+        # generate a few random nodes (testing only)
+        x_start_pos = random.randint(-5, 5)
+        y_start_pos = random.randint(-5, 5)
+        friction = random.random()
+        cur.execute(command, [x_start_pos, y_start_pos, friction])
+        conn.commit()
 
     cur.close()
     conn.close()
@@ -22,6 +31,8 @@ def read_sql_commands(filename):
     f.close()
 
     sql_commands = [command.strip() for command in sql_file.split(';')]
+    # because of ';' at end of file last command is empty string -> remove it
+    sql_commands = sql_commands[:-1]
 
     return sql_commands
 
